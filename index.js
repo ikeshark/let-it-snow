@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(touchPos, snowPersonPos)
 
     if (e.target.closest('.wrapper') === snowPerson) {
+      document.addEventListener('touchstart', touchEvents);
       return;
     } else if (touchPos > snowPersonPos) {
       moveRight();
