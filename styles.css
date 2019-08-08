@@ -256,4 +256,7 @@ body {
   .howTo {
     display: none;
   }
+  .wrapper {
+    margin-top: 3rem;
+  }
 }
