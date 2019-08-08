@@ -1,0 +1,259 @@
+:root {
+  --position: 0rem;
+  --increment: 10rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.flex-center, body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.w-full {
+  width: 100%;
+}
+
+body {
+  height: 100vh;
+  background: darkslategrey;
+  overflow: hidden;
+}
+
+/* SNOWPERSON */
+.body, .legs, .head {
+  border-radius: 50%;
+  border: 2px lightgrey solid;
+  background: radial-gradient(white, beige, slategrey);
+  margin: -15px auto;
+  position: relative;
+}
+.body {
+  width: 100px;
+  height: 100px;
+  z-index: 99;
+}
+.head {
+  width: 75px;
+  height: 75px;
+  z-index: 999;
+}
+.legs {
+  width: 120px;
+  height: 120px;
+  z-index: 9;
+}
+.hat {
+  background: black;
+  height: 5px;
+  z-index: 900000;
+  position: relative;
+}
+.hat::before {
+  height: 50px;
+  width: 53px;
+  content: '';
+  position: absolute;
+  background: linear-gradient(to right, black, #111111, black);
+  top: -50px;
+  left: 33px;
+}
+.eyes {
+  border-radius: 50%;
+  background: black;
+  height: 12px;
+  width: 12px;
+  margin: 0px 5px 15px 5px;
+}
+.carrot {
+  position: absolute;
+  border-left: transparent 5px solid;
+  border-right: transparent 5px solid;
+  border-top: 20px solid orange;
+  bottom: 15px;
+  filter: drop-shadow(0px 1px 1px #D44500);
+}
+.arms {
+  position: absolute;
+  width: 40px;
+  height: 50px;
+  background: transparent;
+  filter: drop-shadow(1px 1px 1px grey);
+}
+.armL {
+  border-left: 3px solid black;
+  border-top: 3px solid black;
+  right: 80px;
+  top: 38px;
+  transform: skew(-15deg) rotate(-15deg);
+  transform-origin: right top;
+}
+.armR {
+  border-right: 3px solid black;
+  border-top: 3px solid black;
+  left: 80px;
+  top: 38px;
+  transform: skew(15deg) rotate(15deg);
+  transform-origin: left top;
+}
+
+/* SNOWSCAPE AND SNOWFLAKES */
+.snowScape {
+  background: beige;
+  bottom: 0;
+  height: 40vh;
+  position: fixed;
+  z-index: -1;
+}
+.snowflake {
+  cursor: default;
+  font-size: 1em;
+  position: fixed;
+  transform: translateY(-60vh);
+  user-select: none;
+  z-index: -9;
+  text-shadow: -7vw -10vh 0 currentColor,
+               0vw -20vh 0 currentColor,
+               -15vw -30vh 0 currentColor;
+}
+
+
+.snowflake:nth-of-type(3n) {
+  font-size: 1.15em;
+  animation-duration: 6s;
+  color: whitesmoke;
+}
+.snowflake:nth-of-type(3n + 1) {
+  font-size: 0.85em;
+  animation-duration: 10s;
+  color: grey;
+  z-index: -999;
+}
+.snowflake:nth-of-type(3n + 2) {
+  color: lightgrey;
+  z-index: -99;
+}
+
+/* HOW TO SCREEN */
+.howTo {
+  background: white;
+  flex-wrap: wrap;
+  height: 100vh;
+  left: 0;
+  padding: 40vh 20vh;
+  position: fixed;
+  top: 0;
+  z-index: 999999999;
+}
+.btn {
+  border: 3px solid black;
+  font-size: 3em;
+  height: 66px;
+  margin: 1%;
+  position: relative;
+  text-align: center;
+  width: 165px;
+}
+.btn::before {
+  border: 2px solid darkslategrey;
+  box-shadow: 0 0 7px 2px grey;
+  content: '';
+  height: 80%;
+  left: 3.5%;
+  position: absolute;
+  top: 7%;
+  width: 90%;
+}
+.btn::after {
+  font-size: 0.45em;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.howToUp {
+  margin: 1% auto;
+}
+.howToUp::after {
+  content: 'bounce';
+  top: -5vh;
+}
+.howToDown::after {
+  content: 'wave';
+  top: 10vh;
+}
+.howToRight::after {
+  content: 'move right';
+  top: 10vh;
+}
+.howToLeft::after {
+  content: 'move left';
+  top: 10vh;
+}
+
+/* ANIMATION */
+@keyframes bounce {
+  from {transform: translateX(var(--position)) translateY(0px)}
+  to {transform: translateX(var(--position)) translateY(-10px)}
+}
+.bounce {
+  animation: bounce .1s 5 alternate ease-in-out;
+}
+
+@keyframes wave {
+  0% {}
+  50% {transform: rotateX(-180deg)}
+  65% {transform: rotateX(-180deg) skewX(15deg)}
+  72% {transform: rotateX(-180deg) skewX(-15deg)}
+  89% {transform: rotateX(-180deg) skewX(15deg)}
+  100% {transform: rotateX(-180deg) skewX(-15deg)}
+}
+.wave {
+  animation: wave 1s ease-out;
+}
+
+@keyframes moveLeft {
+  0% {transform: translateX(var(--position))}
+  25% {transform: translateX(var(--position)) rotate(-10deg)}
+  75% {transform: translateX(calc(var(--position) - var(--increment))) rotate(-10deg)}
+  100% {transform: translateX(calc(var(--position) - var(--increment)))}
+}
+.moveLeft {
+  animation: moveLeft 0.65s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes moveRight {
+  0% {}
+  25% {transform: translateX(var(--position)) rotate(10deg)}
+  75% {transform: translateX(calc(var(--position) + var(--increment))) rotate(10deg)}
+  100% {transform: translateX(calc(var(--position) + var(--increment)))}
+}
+.moveRight {
+  animation: moveRight 0.65s linear;
+  animation-fill-mode: forwards;
+}
+/* this is used to actually move the snowperson */
+.transformX {
+  transform: translateX(var(--position));
+}
+
+@keyframes snowflakes-fall {
+  0% {transform: translate(5vw, -60vh) }
+  100% {transform: translate(10vw, 40vh)}
+}
+.snowflake {
+  animation: snowflakes-fall 8s infinite linear;
+}
+
+/* QUERIES */
+@media screen and (max-width: 765px) {
+  .howTo {
+    display: none;
+  }
+}
