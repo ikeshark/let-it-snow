@@ -1,10 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // https://coderwall.com/p/i817wa/one-line-function-to-detect-mobile-devices-with-javascript
-  function isMobileDevice() {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-  };
-
   const snowPerson = document.querySelector('.wrapper');
   const arms = document.querySelectorAll('.arms');
   const snowflakes = document.querySelectorAll('.snowflake');
@@ -110,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         snowPerson.classList.add('transformX');
         snowPerson.classList.remove('moveLeft');
         document.addEventListener('keydown', keyboardEvents);
-        document.addEventListener('click', touchEvents);
+        document.addEventListener('touchstart', touchEvents);
       }, 600);
     } else {
       document.addEventListener('keydown', keyboardEvents);
@@ -128,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         snowPerson.classList.remove('moveRight')
         snowPerson.classList.add('transformX');
         document.addEventListener('keydown', keyboardEvents);
-        document.addEventListener('click', touchEvents);
+        document.addEventListener('touchstart', touchEvents);
       }, 600);
     } else {
       document.addEventListener('keydown', keyboardEvents);
@@ -157,13 +152,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', keyboardEvents);
 
   function touchEvents(e) {
-    if (!isMobileDevice()) {
-      return;
-    }
-    document.removeEventListener('click', touchEvents);
 
-    const touchPos = e.pageX;
+    document.removeEventListener('touchstart', touchEvents);
+
+    const touchPos = e.touches[0].clientX;;
     const snowPersonPos = snowPerson.getBoundingClientRect().x;
+
+    console.log(touchPos, snowPersonPos)
 
     if (e.target.closest('.wrapper') === snowPerson) {
       return;
@@ -172,14 +167,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (touchPos < snowPersonPos) {
       moveLeft();
     } else {
-      document.addEventListener('click', touchEvents);
+      document.addEventListener('touchstart', touchEvents);
 
       // remove in production
       alert('error');
     }
   }
 
-  document.addEventListener('click', touchEvents)
+  document.addEventListener('touchstart', touchEvents)
 
   snowPerson.addEventListener('click', function() {
     if (clickCounter == 0) {
