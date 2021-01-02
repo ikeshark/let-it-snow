@@ -2,25 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const snowPerson = document.querySelector('.wrapper');
   const arms = document.querySelectorAll('.arms');
-  const snowflakes = document.querySelectorAll('.snowflake');
-  // this is for alternating arms to wave
-  let waveBool = false;
-  let position = 0;
-  // for mouse only interaction it will cycle through basic animations
-  let clickCounter = 0;
   // this is for modifying css variables
   const elm = document.documentElement;
+
+  // how far snowperson moves
   const increment = parseInt(getComputedStyle(elm)
     .getPropertyValue('--increment'));
 
-  function hideHowTo() {
-    document.querySelector('.howTo').style.display = 'none';
-    wave();
-    document.body.removeEventListener('click', hideHowTo);
-  }
-  document.body.addEventListener('click', hideHowTo);
+  // this is for alternating arms to wave
+  let waveBool = false;
+  // snowperson position relative to starting point (center)
+  let position = 0;
+  // for mouse only interaction it will cycle through basic animations
+  let clickCounter = 0;
 
   (function snowflakeInit() {
+    const snowflakes = document.querySelectorAll('.snowflake');
+    const halfNumOfFlakes = snowflakes.length / 2;
+
     // helper function, shuffles arrays
     function shuffle(array) {
       let m = array.length, t, i;
@@ -38,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // generate array of delay times, while spacing snowflakes
     const snowflakesDelay = [];
-    for (let i = 0; i < 20; i++) {
-      const dly = i / 20;
+    for (let i = 0; i < halfNumOfFlakes; i++) {
+      const dly = i / halfNumOfFlakes;
       snowflakesDelay.push(dly);
       var leftAmt = ((i + 1) * 5) + '%';
       snowflakes[i].style.left = leftAmt;
@@ -55,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
       snowflakes[i].style.animationDelay = dly;
     }
     // this is for the second wave of snowflakes
-    for (let i = 20; i < snowflakes.length; i++) {
+    for (let i = halfNumOfFlakes; i < snowflakes.length; i++) {
       // grab snow flakes 'duplicate' (approx same position)
       // find animation delay length, parse float, add a few seconds
-      dly = snowflakes[i - 20].style.animationDelay;
+      dly = snowflakes[i - halfNumOfFlakes].style.animationDelay;
       dly = parseFloat(dly);
       if (i % 3 == 1) {
         dly += 4;
@@ -75,21 +74,27 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   // snowperson animations
+
   function bounce() {
     snowPerson.classList.add('bounce');
-    window.setTimeout(() => {
+    function endStep() {
       snowPerson.classList.remove('bounce');
-    }, 600);
+      snowPerson.removeEventListener('animationend', endStep);
+    }
+    snowPerson.addEventListener('animationend', endStep);
   }
 
-  function wave() {
+  function wave(cb) {
     var arm = waveBool ? 0 : 1;
     waveBool = !waveBool;
     arms[arm].classList.add('wave');
 
-    window.setTimeout(() => {
+    function endStep() {
       arms[arm].classList.remove('wave');
-    }, 1100);
+      arms[arm].removeEventListener('animationend', endStep);
+      cb();
+    }
+    arms[arm].addEventListener('animationend', endStep);
   }
 
   function moveLeft() {
@@ -100,13 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (left - width/2 > 0) {
       snowPerson.classList.add('moveLeft');
       position -= increment;
-      window.setTimeout(() => {
+      function endStep() {
         elm.style.setProperty('--position', position + 'rem');
-        snowPerson.classList.add('transformX');
         snowPerson.classList.remove('moveLeft');
         document.addEventListener('keydown', keyboardEvents);
         document.addEventListener('touchstart', touchEvents);
-      }, 600);
+        document.removeEventListener('animationend', endStep);
+      }
+      snowPerson.addEventListener('animationend', endStep);
+
     } else {
       document.addEventListener('keydown', keyboardEvents);
     }
@@ -118,17 +125,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rightBound > right) {
       snowPerson.classList.add('moveRight');
       position += increment;
-      window.setTimeout(() => {
+
+      function endStep() {
         elm.style.setProperty('--position', position + 'rem');
         snowPerson.classList.remove('moveRight')
-        snowPerson.classList.add('transformX');
         document.addEventListener('keydown', keyboardEvents);
         document.addEventListener('touchstart', touchEvents);
-      }, 600);
+        snowPerson.removeEventListener('animationend', endStep);
+      }
+
+      snowPerson.addEventListener('animationend', endStep);
     } else {
       document.addEventListener('keydown', keyboardEvents);
     }
   }
+  function slide() {
+    var armL = snowPerson.querySelector('.armL');
+    var armR = snowPerson.querySelector('.armR');
+    snowPerson.addEventListener('animationend', () => {
+      snowPerson.classList.remove('slideBody');
+      armL.classList.remove('slideArm');
+      armL.classList.add('rotateArmL');
+      armR.classList.add('rotateArmR');
+    });
+    snowPerson.classList.add('slideBody');
+    armL.classList.remove('rotateArmL');
+    armR.classList.remove('rotateArmR');
+    armL.classList.add('slideArm');
+  }
+  function turnHead() {
+    document.querySelector('.eyesWrapper').classList.add('rotateEyes');
+    document.querySelector('.carrot').classList.add('rotateCarrot');
+    document.querySelector('.armR').classList.add('rotateArmR');
+    document.querySelector('.armL').classList.add('rotateArmL');
+  }
+  function hideHowTo() {
+    document.querySelector('.howTo').style.display = 'none';
+    wave(turnHead);
+    document.body.removeEventListener('click', hideHowTo);
+  }
+  document.body.addEventListener('click', hideHowTo);
 
   // event listeners and delegation
   function keyboardEvents(e) {
@@ -142,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bounce();
       document.addEventListener('keydown', keyboardEvents);
     } else if (keyName == 's' || keyName == 'ArrowDown') {
-      wave();
+      slide();
       document.addEventListener('keydown', keyboardEvents);
     } else {
       document.addEventListener('keydown', keyboardEvents);
@@ -152,13 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', keyboardEvents);
 
   function touchEvents(e) {
-
     document.removeEventListener('touchstart', touchEvents);
 
     const touchPos = e.touches[0].clientX;;
     const snowPersonPos = snowPerson.getBoundingClientRect().x;
-
-    console.log(touchPos, snowPersonPos)
 
     if (e.target.closest('.wrapper') === snowPerson) {
       document.addEventListener('touchstart', touchEvents);
@@ -169,9 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
       moveLeft();
     } else {
       document.addEventListener('touchstart', touchEvents);
-
-      // remove in production
-      alert('error');
     }
   }
 
@@ -179,18 +209,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   snowPerson.addEventListener('click', function() {
     if (clickCounter == 0) {
-      this.classList.add('bounce');
-      window.setTimeout(() => {
-        this.classList.remove('bounce')
-      }, 600);
+      bounce();
     } else if (clickCounter == 1) {
-      var arm = waveBool ? 0 : 1;
-      waveBool = !waveBool;
-      arms[arm].classList.add('wave');
-      window.setTimeout(() => {
-        arms[arm].classList.remove('wave')
-      }, 1100);
+      wave();
     }
     clickCounter = clickCounter ? 0 : 1;
   });
 });
+
+
+var snowPerson = document.querySelector('.wrapper');
+function freakOut() {
+  var notHat = document.querySelectorAll('.wrapper > div:not(.hat)');
+  notHat.forEach(elem => {
+    elem.classList.add('freakOut')
+  })
+}
