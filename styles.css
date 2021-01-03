@@ -131,7 +131,7 @@ body {
   position: absolute;
   left: 0;
   user-select: none;
-  top: 3.5rem;
+  bottom: -22vh;
   --hue: 120;
   --sat: 100%;
   --light: 25%;
@@ -188,7 +188,6 @@ body {
   --light: 32%;
   animation-duration: 12s;
   z-index: 2;
-  top: 2.5rem;
 }
 /* deepest */
 .tree:nth-of-type(3n + 1) {
@@ -198,7 +197,6 @@ body {
   --light: 22.5%;
   animation-duration: 16s;
   animation-delay: 1s;
-  top: 5rem;
   z-index: 0;
 }
 .tree:nth-of-type(3n + 2) {
@@ -314,19 +312,25 @@ body {
 }
 .howToUp::after {
   content: 'bounce';
-  top: -5vh;
+  top: -1.75rem;
 }
 .howToDown::after {
   content: 'slide';
-  top: 10vh;
+  top: 4rem;
 }
 .howToRight::after {
   content: 'move right';
-  top: 10vh;
+  top: 4rem;
 }
 .howToLeft::after {
   content: 'move left';
-  top: 10vh;
+  top: 4rem;
+}
+.howTo p {
+  margin-top: 2rem;
+  font-size: 1.25rem;
+  width: 100%;
+  text-align: center;
 }
 
 /* ANIMATION */

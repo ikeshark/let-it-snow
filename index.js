@@ -166,6 +166,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.body.addEventListener('click', hideHowTo);
 
+  function toggleAnimation() {
+    console.log('triggered')
+    const animatedElems = document.querySelectorAll('.tree, .snowflake, .rotateArmL, .rotateArmR');
+    animatedElems.forEach(({ style }) => {
+      console.log(style.webkitAnimationPlayState)
+      if (style.webkitAnimationPlayState !== 'paused') {
+        style.webkitAnimationPlayState = 'paused'
+      } else {
+        style.webkitAnimationPlayState = 'running'
+      }
+    })
+  }
+
   // event listeners and delegation
   function keyboardEvents(e) {
     document.removeEventListener('keydown', keyboardEvents);
@@ -179,6 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.addEventListener('keydown', keyboardEvents);
     } else if (keyName == 's' || keyName == 'ArrowDown') {
       slide();
+      document.addEventListener('keydown', keyboardEvents);
+    } else if (keyName == 'p') {
+      toggleAnimation();
       document.addEventListener('keydown', keyboardEvents);
     } else {
       document.addEventListener('keydown', keyboardEvents);
